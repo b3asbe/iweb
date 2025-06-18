@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, User, GraduationCap, Fingerprint } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { PasswordRecovery } from './PasswordRecovery';
 
 export const LoginForm: React.FC = () => {
   const [loginType, setLoginType] = useState<'system' | 'student'>('student');
   const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [error, setError] = useState('');
   const { login, isLoading } = useAuth();
+
+  if (showPasswordRecovery) {
+    return <PasswordRecovery onBack={() => setShowPasswordRecovery(false)} />;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,9 +150,13 @@ export const LoginForm: React.FC = () => {
               />
               <span className="ml-2 text-sm text-gray-600">Recordar credenciales</span>
             </label>
-            <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
+            <button
+              type="button"
+              onClick={() => setShowPasswordRecovery(true)}
+              className="text-sm text-blue-600 hover:text-blue-500"
+            >
               ¿Olvidaste tu contraseña?
-            </a>
+            </button>
           </div>
 
           <div className="space-y-3">

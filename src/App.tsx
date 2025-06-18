@@ -14,6 +14,11 @@ import { SystemConfiguration } from './components/Admin/SystemConfiguration';
 import { ReportsManagement } from './components/Admin/ReportsManagement';
 import { ContentManagement } from './components/Teacher/ContentManagement';
 import { EvaluationManagement } from './components/Teacher/EvaluationManagement';
+import { SessionScheduling } from './components/Teacher/SessionScheduling';
+import { StudentManagement } from './components/Teacher/StudentManagement';
+import { TeacherMessaging } from './components/Teacher/TeacherMessaging';
+import { MessagingSystem } from './components/Student/MessagingSystem';
+import { ProgressTracking } from './components/Student/ProgressTracking';
 
 const AppContent: React.FC = () => {
   const { user } = useAuth();
@@ -52,6 +57,9 @@ const AppContent: React.FC = () => {
       // Teacher modules
       case 'content':
         return user.role === 'teacher' ? <ContentManagement /> : null;
+      
+      case 'sessions':
+        return user.role === 'teacher' ? <SessionScheduling /> : null;
       
       case 'evaluations':
         return user.role === 'teacher' ? <EvaluationManagement /> : null;
@@ -100,10 +108,43 @@ const AppContent: React.FC = () => {
           </div>
         );
       
+      case 'schedule':
+        return (
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Mi Cronograma</h1>
+              <p className="mt-1 text-sm text-gray-600">
+                Visualiza tu horario de sesiones y actividades programadas
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="text-center py-12">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                  Cronograma en Desarrollo
+                </h2>
+                <p className="text-gray-600">
+                  Esta funcionalidad estará disponible próximamente.
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      
       case 'gamification':
         return <GamificationPanel />;
       
+      case 'progress':
+        return user.role === 'student' ? <ProgressTracking /> : null;
+      
+      case 'messages':
+        if (user.role === 'teacher') return <TeacherMessaging />;
+        if (user.role === 'student') return <MessagingSystem />;
+        return null;
+      
       case 'students':
+        if (user.role === 'teacher') return <StudentManagement />;
+        
         return (
           <div className="space-y-6">
             <div>
