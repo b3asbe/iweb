@@ -14,6 +14,13 @@ import { SystemConfiguration } from './components/Admin/SystemConfiguration';
 import { ReportsManagement } from './components/Admin/ReportsManagement';
 import { ContentManagement } from './components/Teacher/ContentManagement';
 import { EvaluationManagement } from './components/Teacher/EvaluationManagement';
+import { StudentMessageCenter } from './components/Student/MessageCenter';
+import { PasswordRecovery } from './components/Auth/PasswordRecovery';
+import { StudentManagement } from './components/Admin/StudentManagement';
+import { SessionManagement } from './components/Teacher/SessionManagement';
+import { MyStudents } from './components/Teacher/MyStudents';
+import { TeacherMessageCenter } from './components/Teacher/MessageCenter';
+import { StudentProgress } from './components/Student/Progress';
 
 const AppContent: React.FC = () => {
   const { user } = useAuth();
@@ -48,7 +55,18 @@ const AppContent: React.FC = () => {
       
       case 'reports':
         return (user.role === 'admin' || user.role === 'teacher') ? <ReportsManagement /> : null;
-      
+
+      case 'sessions':
+        return user.role === 'teacher' ? <SessionManagement /> : null;
+
+      case 'messages':
+        if (user.role === 'teacher') return <TeacherMessageCenter />;
+        if (user.role === 'student') return <StudentMessageCenter />;
+        return null;
+
+      case 'progress':
+        return user.role === 'student' ? <StudentProgress /> : null;
+
       // Teacher modules
       case 'content':
         return user.role === 'teacher' ? <ContentManagement /> : null;
@@ -102,98 +120,9 @@ const AppContent: React.FC = () => {
       
       case 'gamification':
         return <GamificationPanel />;
-      
+
       case 'students':
-        return (
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {user.role === 'admin' ? 'Gestión de Estudiantes' : 'Mis Estudiantes'}
-              </h1>
-              <p className="mt-1 text-sm text-gray-600">
-                {user.role === 'admin' 
-                  ? 'Administra los estudiantes del turno nocturno'
-                  : 'Supervisa el progreso de tus estudiantes'
-                }
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estudiante
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Código
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Progreso
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Última Actividad
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {[
-                      { name: 'Carlos Miguel', code: 'EST001', progress: 78, lastActivity: '2 horas', status: 'Activo' },
-                      { name: 'Ana García', code: 'EST002', progress: 92, lastActivity: '1 hora', status: 'Activo' },
-                      { name: 'Diego Ruiz', code: 'EST003', progress: 65, lastActivity: '1 día', status: 'Activo' },
-                      { name: 'Laura Vega', code: 'EST004', progress: 88, lastActivity: '3 horas', status: 'Activo' },
-                    ].map((student, index) => (
-                      <tr key={index}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                <span className="text-blue-600 font-medium">
-                                  {student.name.split(' ').map(n => n[0]).join('')}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {student.name}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {student.code}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                              <div
-                                className="bg-blue-600 h-2 rounded-full"
-                                style={{ width: `${student.progress}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-sm text-gray-900">{student.progress}%</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          hace {student.lastActivity}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                            {student.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        );
+        return user.role === 'admin' ? <StudentManagement /> : <MyStudents />;
       
       default:
         return (
